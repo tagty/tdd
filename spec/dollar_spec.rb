@@ -2,24 +2,22 @@ require 'dollar'
 
 RSpec.describe Dollar do
   describe "#times" do
-    context "times repeatedly" do
-      it "gets correct amount" do
+    context "repeated multiplication" do
+      it "gets multiplied amount" do
         five = Dollar.new(5)
-        product = five.times(2)
-        expect(product.amount).to eq 10
-        product = five.times(3)
-        expect(product.amount).to eq 15
+        # Other object was created
+        # expect(five.times(2)).to eq Dollar.new(10) 
+        expect(five.times(2).amount).to eq Dollar.new(10).amount 
+        # expect(five.times(3)).to eq Dollar.new(15)
+        expect(five.times(3).amount).to eq Dollar.new(15).amount
       end
     end
   end
 
   describe "#equals" do
     context "check equality" do
-      it "gets equal amount" do
+      it "gets [equal/not equal] amount" do
         expect(true).to eq Dollar.new(5).equals(Dollar.new(5))
-      end
-
-      it "gets not equal amount" do
         expect(false).to eq Dollar.new(5).equals(Dollar.new(6))
       end
     end
