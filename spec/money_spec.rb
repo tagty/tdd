@@ -1,4 +1,5 @@
 require 'dollar'
+require 'franc'
 
 RSpec.describe Dollar do
   describe "#times" do
@@ -23,3 +24,16 @@ RSpec.describe Dollar do
     end
   end
 end
+
+RSpec.describe Franc do
+  describe "#times" do
+    context "repeated multiplication" do
+      it "gets multiplied amount" do
+        five = Franc.new(5)
+        expect(five.times(2).amount).to eq Franc.new(10).amount 
+        expect(five.times(3).amount).to eq Franc.new(15).amount
+      end
+    end
+  end
+end
+
