@@ -14,15 +14,6 @@ RSpec.describe Dollar do
       end
     end
   end
-
-  describe "#equals" do
-    context "check equality" do
-      it "gets [equal/not equal] amount" do
-        expect(true).to eq Dollar.new(5).equals(Dollar.new(5))
-        expect(false).to eq Dollar.new(5).equals(Dollar.new(6))
-      end
-    end
-  end
 end
 
 RSpec.describe Franc do
@@ -37,3 +28,16 @@ RSpec.describe Franc do
   end
 end
 
+RSpec.describe Money do
+  describe "#equals" do
+    context "test equality" do
+      it "gets [equal/not equal] amount" do
+        expect(true).to eq Dollar.new(5).equals(Dollar.new(5))
+        expect(false).to eq Dollar.new(5).equals(Dollar.new(6))
+        expect(true).to eq Franc.new(5).equals(Franc.new(5))
+        expect(false).to eq Franc.new(5).equals(Franc.new(6))
+        expect(false).to eq Franc.new(5).equals(Dollar.new(6))
+      end
+    end
+  end  
+end
