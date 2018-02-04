@@ -32,4 +32,13 @@ RSpec.describe Money do
       end
     end
   end  
+
+  describe "#currency" do
+    context "test currency" do
+      it "has currency" do
+        expect("USD").to eq Money.dollar(1).currency
+        expect("CHF").to eq Money.franc(1).currency
+      end
+    end
+  end
 end
