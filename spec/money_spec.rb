@@ -57,6 +57,15 @@ RSpec.describe Money do
       expect(result.amount).to eq Money.dollar(1).amount
       expect(result.currency).to eq Money.dollar(1).currency
     end
+    it "returns mixed addition" do
+      five_bucks = Money.dollar 5
+      ten_francs = Money.franc 10
+      bank = Bank.new
+      bank.add_rate("CHF", "USD", 2)
+      result = bank.reduce(five_bucks.plus(ten_francs), "USD")
+      expect(result.amount).to eq Money.dollar(10).amount
+      expect(result.currency).to eq Money.dollar(10).currency
+    end
   end
   describe "#rate" do
     it "returns identity rate" do
