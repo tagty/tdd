@@ -7,35 +7,33 @@ class TeatCase
   end
   def set_up
   end
+  def tear_down
+  end
   def run
+    set_up
     send(@name)
+    tear_down
   end
 end
 class WasRun < TeatCase
-  attr_reader :was_run, :was_set_up
+  attr_reader :log
   def set_up
-    @was_run = false
-    @was_set_up = true
+    @log = 'set_up '
   end
   def test_method
-    @was_run = true 
+    @log += 'test_method '
+  end
+  def tear_down
+    @log += 'tear_down '
   end
 end
 class TestCaseTest < TeatCase
-  #attr_reader :test
-  def set_up
-    @test = WasRun.new 'test_method'
-  end
-  def test_running
-    @test.run
-    assert_equal(true, @test.was_run)
-  end
-  def test_set_up
-    @test.run
-    assert_equal(true, @test.was_set_up)
+  def test_template_method
+    test = WasRun.new 'test_method'
+    test.run
+    assert_equal('set_up test_method tear_down ', test.log)
   end
 end
 
-TestCaseTest.new('test_running').set_up.run
-TestCaseTest.new('test_set_up').set_up.run
+TestCaseTest.new('test_template_method').run
 
