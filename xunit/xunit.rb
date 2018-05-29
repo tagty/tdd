@@ -12,7 +12,11 @@ class TeatCase
     result = TestResult.new
     result.test_started
     set_up
-    send(@name)
+    begin
+      send(@name)
+    rescue
+      result.test_failed
+    end
     tear_down
     result
   end
@@ -48,19 +52,30 @@ class TestCaseTest < TeatCase
     result = test.run
     assert_equal('1 run, 1 failed', result.summary)
   end
+  def test_failed_result_formatting
+    result = TestResult.new
+    result.test_started
+    result.test_failed
+    assert_equal('1 run, 1 failed', result.summary)
+  end
 end
 class TestResult
   def initialize
     @run_count = 0
+    @error_count = 0
   end
   def test_started
     @run_count += 1
   end
+  def test_failed
+    @error_count += 1
+  end
   def summary
-    "%d run, 0 failed" % @run_count
+    "%d run, %d failed" % [@run_count, @error_count]
   end
 end
-TestCaseTest.new('test_template_method').run
-TestCaseTest.new('test_result').run
-#TestCaseTest.new('test_failed_result').run
+puts TestCaseTest.new('test_template_method').run.summary
+puts TestCaseTest.new('test_result').run.summary
+puts TestCaseTest.new('test_failed_result').run.summary
+puts TestCaseTest.new('test_failed_result_formatting').run.summary
 
