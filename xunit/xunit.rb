@@ -8,8 +8,7 @@ class TeatCase
   end
   def tear_down
   end
-  def run
-    result = TestResult.new
+  def run(result)
     result.test_started
     set_up
     begin
@@ -18,7 +17,6 @@ class TeatCase
       result.test_failed
     end
     tear_down
-    result
   end
 end
 class WasRun < TeatCase
@@ -37,26 +35,35 @@ class WasRun < TeatCase
   end
 end
 class TestCaseTest < TeatCase
+  def set_up
+    @result = TestResult.new
+  end
   def test_template_method
     test = WasRun.new 'test_method'
-    test.run
+    test.run @result
     assert_equal('set_up test_method tear_down ', test.log)
   end
   def test_result
     test = WasRun.new 'test_method'
-    result = test.run
-    assert_equal('1 run, 0 failed', result.summary)
+    test.run @result
+    assert_equal('1 run, 0 failed', @result.summary)
   end
   def test_failed_result
     test = WasRun.new 'test_broken_method'
-    result = test.run
-    assert_equal('1 run, 1 failed', result.summary)
+    test.run @result
+    assert_equal('1 run, 1 failed', @result.summary)
   end
   def test_failed_result_formatting
-    result = TestResult.new
-    result.test_started
-    result.test_failed
-    assert_equal('1 run, 1 failed', result.summary)
+    @result.test_started
+    @result.test_failed
+    assert_equal('1 run, 1 failed', @result.summary)
+  end
+  def test_suite
+    suite = TestSuite.new
+    suite.add(WasRun.new('test_method'))
+    suite.add(WasRun.new('test_broken_method'))
+    suite.run @result
+    assert_equal('2 run, 1 failed', @result.summary)
   end
 end
 class TestResult
@@ -74,8 +81,27 @@ class TestResult
     "%d run, %d failed" % [@run_count, @error_count]
   end
 end
-puts TestCaseTest.new('test_template_method').run.summary
-puts TestCaseTest.new('test_result').run.summary
-puts TestCaseTest.new('test_failed_result').run.summary
-puts TestCaseTest.new('test_failed_result_formatting').run.summary
+class TestSuite
+  def initialize
+    @tests = []
+  end
+  def add(test)
+    @tests << test
+  end
+  def run(result)
+    @tests.each do |test|
+      test.run(result)
+    end
+  end
+end
+
+suite = TestSuite.new
+suite.add TestCaseTest.new('test_template_method')
+suite.add TestCaseTest.new('test_result')
+suite.add TestCaseTest.new('test_failed_result')
+suite.add TestCaseTest.new('test_failed_result_formatting')
+suite.add TestCaseTest.new('test_suite')
+result = TestResult.new
+suite.run result
+puts result.summary
 
